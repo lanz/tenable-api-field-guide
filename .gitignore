@@ -1,0 +1,5 @@
+__pycache__/
+.pytest_cache/
+.venv/
+# Internal names checked by the tests; local only.
+tests/internal-patterns.txt
