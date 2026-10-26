@@ -165,8 +165,7 @@ The tests check:
 
 ## License
 
-Licensed under the [MIT License](LICENSE). Copyright (c) 2026 Lance Duvall
-([@lanz](https://github.com/lanz)).
+Licensed under the [MIT License](LICENSE). Copyright (c) 2026 [Lance Duvall](https://github.com/lanz).
 
 ## Disclaimer
 
