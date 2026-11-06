@@ -29,12 +29,12 @@ jobs; completed jobs only appear for three days.
 
 ### Status values
 
-- Vulns, assets and WAS: `QUEUED`, `PROCESSING`, `FINISHED`, `CANCELLED` (two Ls), `ERROR`.
-- Compliance uses `PROCESSING`, **`READY`**, `FINISHED`, `CANCELLED` and `ERROR`. It has no
+- Vulns, assets, and WAS: `QUEUED`, `PROCESSING`, `FINISHED`, `CANCELLED` (two Ls), `ERROR`.
+- Compliance uses `PROCESSING`, **`READY`**, `FINISHED`, `CANCELLED`, and `ERROR`. It has no
   `QUEUED`, and `READY` means some chunks are downloadable while processing continues.
 - A `FINISHED` vuln export can still carry a `reason` such as "N of M chunks failed to
   process". Check `chunks_failed` and `reason`, not only `status`.
-- If one chunk fails, every chunk queued after it is cancelled.
+- If one chunk fails, every chunk queued after it is canceled.
 
 ### Chunks
 
@@ -65,7 +65,7 @@ jobs; completed jobs only appear for three days.
     (parse `job_uuid` from the message) or change the filters.
 - No more than **10 concurrent exports per container**, shared by every export type and
   every user. The 11th returns 429 with `retry-after`.
-- Compliance exports running longer than 24 hours are cancelled automatically.
+- Compliance exports running longer than 24 hours are canceled automatically.
 - Permissions: Basic role or the `VM_EXPLORE` export permission, plus Can View on the
   assets. An Administrator doesn't need explicit Can View.
 
@@ -87,18 +87,18 @@ jobs; completed jobs only appear for three days.
 
 | Behavior | Rule |
 |---|---|
-| No time filter | **Only findings found or fixed in the last 30 days.** Time filters are `since`, `indexed_at`, `first_found`, `last_found` and `last_fixed` |
+| No time filter | **Only findings found or fixed in the last 30 days.** Time filters are `since`, `indexed_at`, `first_found`, `last_found`, and `last_fixed` |
 | No `state` filter | **Only `OPEN` and `REOPENED`. FIXED is excluded** |
-| `since` with no `state` | **OPEN, REOPENED and FIXED.** OPEN/REOPENED match on `last_found >= since`, FIXED on `last_fixed >= since`. This is the recommended incremental-sync filter |
-| `since` combined with `first_found`, `first_seen`, `last_found`, `last_seen` or `last_fixed` | Not allowed |
-| `first_found`, `last_found` or `last_fixed` | `state` is **required** |
+| `since` with no `state` | **OPEN, REOPENED, and FIXED.** OPEN/REOPENED match on `last_found >= since`, FIXED on `last_fixed >= since`. This is the recommended incremental-sync filter |
+| `since` combined with `first_found`, `first_seen`, `last_found`, `last_seen`, or `last_fixed` | Not allowed |
+| `first_found`, `last_found`, or `last_fixed` | `state` is **required** |
 | `include_unlicensed` | API default `false`, so assets past their licensed period are excluded |
 | `num_assets` | Assets per chunk, not findings. Default 50, range 50–5000. **Out-of-range values are clamped**, not rejected. Tenable recommends 1,000–3,000 for integrations |
 
 ### Filters
 
 - Time filters are 10-digit Unix timestamps in **seconds**: `since`, `first_found` (alias
-  `first_seen`), `last_found` (alias `last_seen`), `last_fixed`, `indexed_at` and
+  `first_seen`), `last_found` (alias `last_seen`), `last_fixed`, `indexed_at`, and
   `resurfaced_date`.
 - `state`: `OPEN`, `REOPENED`, `FIXED`. Case-insensitive. The UI's "new" and "active" map to
   OPEN, and "resurfaced" to REOPENED.
@@ -117,7 +117,7 @@ jobs; completed jobs only appear for three days.
   neither value; one with several CVEs can match both.
 - `properties` (top level, since 2026-08-03): list the fields you want, which can make
   exports much smaller.
-  - `id`, `asset.id` and `definition.id` are always included.
+  - `id`, `asset.id`, and `definition.id` are always included.
   - An unknown property returns 400 `BAD_REQUEST_UNKNOWN_PROPERTY`.
   - Output uses the full-export field names: `finding_id`, `asset.hostname`, `plugin.name`,
     `first_found`.
@@ -126,16 +126,16 @@ jobs; completed jobs only appear for three days.
 - **Removed:** the `vpr_v2_score` filter and the `plugin.vpr_v2` field were removed on
   2026-10-01, and both now return 400 `BAD_REQUEST_UNKNOWN_PROPERTY` in a request. Use
   `vpr_score` and `plugin.vpr`, which now carry VPR v2.
-  - In VM findings, `plugin.vpr` holds `score`, `updated` and `drivers`, plus the v2
+  - In VM findings, `plugin.vpr` holds `score`, `updated`, and `drivers`, plus the v2
     fields: `cve_id`, `vpr_percentile` (0–100), `vpr_severity`, `exploit_probability`
     (0–1), `exploit_code_maturity`, `on_cisa_kev`, `in_the_news_intensity_last_30`,
-    `in_the_news_recency`, `malware_observations_intensity_last_30` and
+    `in_the_news_recency`, `malware_observations_intensity_last_30`, and
     `malware_observations_recency`. Note the underscore in `last_30`.
   - VM `plugin.vpr` also has `exploit_chain`, `in_the_news_sources_last_30`,
-    `threat_summary`, `remediation`, `targeted_industries` and `targeted_regions`. A full
+    `threat_summary`, `remediation`, `targeted_industries`, and `targeted_regions`. A full
     export **omits these when they're empty**, so treat them as optional. Selecting them with
     `properties` returns them even when empty.
-  - WAS findings' `plugin.vpr` always has `score`, occasionally `drivers` and `updated`, and
+  - WAS findings' `plugin.vpr` always has `score`, occasionally `drivers`, and `updated`, and
     none of the v2 fields.
   - The *property selection* names `vpr_v2` and `vpr_v2_drivers_<name>` are still accepted in
     VM `properties`. `vpr_v2` and `definition.vpr.score` both return `plugin.vpr.score`, and
@@ -186,7 +186,7 @@ The request shape and the 30-day default window are the same as the vuln export,
 
 - Severity values are **uppercase** (`INFO` … `CRITICAL`).
 - The plugin filter is **`plugin_ids`** (plural).
-- WAS-specific filters: `asset_uuid`, `asset_name`, `ipv4s` and `owasp_*`.
+- WAS-specific filters: `asset_uuid`, `asset_name`, `ipv4s`, and `owasp_*`.
 
 Two different things in pyTenable are both called WAS export: `tio.exports.was()` is this
 API, while `tio.was.export()` is a legacy helper that walks scan results and returns a
@@ -227,7 +227,7 @@ for finding in iterator:          # plain dicts
   - This only works for vulns and WAS. A duplicate asset export returns 429, which pyTenable
     retries as a rate limit, waiting `retry-after` each time. That's about 4 minutes, after
     which it raises `TooManyRequestsError` unless the first job finished in the meantime.
-- `compliance(state=…)` takes `OPEN`, `REOPENED` and `FIXED`. Its type hint lists severity
+- `compliance(state=…)` takes `OPEN`, `REOPENED`, and `FIXED`. Its type hint lists severity
   values, but the model validates states, and so does the API.
 - Tags are `[('Category', 'Value')]` or `[('Category', ['V1', 'V2'])]`. pyTenable converts
   them to each export's format. `assets_v2()` has no `tags` parameter.
@@ -236,10 +236,10 @@ for finding in iterator:          # plain dicts
 - `when_done=True` withholds chunks until the job is `FINISHED`. It's a boolean, not a
   callback. **`exports.assets()` (v1) accepts it but ignores it.**
 - `timeout=` only applies while the job is `QUEUED`. When it's exceeded, the job is
-  cancelled and `TioExportsTimeout` is raised. The clock starts when the iterator is created,
+  canceled and `TioExportsTimeout` is raised. The clock starts when the iterator is created,
   which matters when reattaching with `uuid=`. Compliance jobs are never `QUEUED`, so
   `timeout=` never fires for them.
-- **The iterator stops only on `FINISHED` (or raises on `ERROR`).** A job cancelled by
+- **The iterator stops only on `FINISHED` (or raises on `ERROR`).** A job canceled by
   someone else is polled forever, every 30 seconds at most. Enforce your own overall
   deadline in long-running jobs.
 - `max_items` and `max_pages` aren't honored by export iterators.
@@ -255,6 +255,6 @@ for finding in iterator:          # plain dicts
   - `epss_score` validation accepts 0–100.
   - `properties=` is available.
   - New filters: `include_plugin_output`, `include_software_vulns`, `zero_day`,
-    `software_vulns_potential` and `software_vulns_potential_reasons`.
+    `software_vulns_potential`, and `software_vulns_potential_reasons`.
 
   Upgrade with `pip install -U pytenable`.

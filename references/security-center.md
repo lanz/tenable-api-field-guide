@@ -35,16 +35,16 @@ Security Center user guide.
   data. Listing scans with an administrator's keys returns **HTTP 403** with
   `error_code: 163` ("Administrators may not manage Scans."). pyTenable raises a plain
   `APIError` with `.code == 403`.
-- Security Manager, SM-Linked, Security Analyst and Vulnerability Analyst can work with
-  scans. Auditor can't. Results only cover the scans, asset lists and repositories the user
+- Security Manager, SM-Linked, Security Analyst, and Vulnerability Analyst can work with
+  scans. Auditor can't. Results only cover the scans, asset lists, and repositories the user
   can use or manage.
 
 ## Scans and schedules
 
 - `GET /rest/scan?fields=…` returns every scan's targets (`ipList`, `assets`), repository,
-  zone, policy, credentials and schedule in one call. There's no per-scan editor request
+  zone, policy, credentials, and schedule in one call. There's no per-scan editor request
   as in VM.
-- `schedule.type` is one of `ical`, `dependent`, `rollover`, `template`, `now` or `never`.
+- `schedule.type` is one of `ical`, `dependent`, `rollover`, `template`, `now`, or `never`.
   - `ical` scans run on `repeatRule` (an RRULE), starting at `start`.
   - `dependent` scans run after the scan in `schedule.dependent`.
   - **`template` means on demand.** It still reports `enabled: "true"`, so decide whether a
@@ -69,7 +69,7 @@ Security Center user guide.
     empty. Keep the part after the last `|`, and drop empty entries.
   - Members only cover repositories the user can see, and they change as hosts are
     rescanned.
-- Asset lists also drive analysis, dashboards, reports and user access. A list that no scan
+- Asset lists also drive analysis, dashboards, reports, and user access. A list that no scan
   uses isn't unused.
 
 ## Freeze windows

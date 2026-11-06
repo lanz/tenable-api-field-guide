@@ -1,4 +1,4 @@
-# Rate limits, concurrency, retries and User-Agent
+# Rate limits, concurrency, retries, and User-Agent
 
 Sources: [API limitations](https://developer.tenable.com/docs/api-limitations),
 [Rate limiting](https://developer.tenable.com/docs/rate-limiting),
@@ -9,7 +9,7 @@ Sources: [API limitations](https://developer.tenable.com/docs/api-limitations),
 ## Scope
 
 These limits apply to the APIs on `cloud.tenable.com`: VM, WAS, Tenable One / Exposure
-Management, PCI ASV and MSSP. They **don't** apply to Security Center, Cloud Security, ASM
+Management, PCI ASV, and MSSP. They **don't** apply to Security Center, Cloud Security, ASM,
 or OT, which have no published limits.
 
 ## Rate limit
@@ -29,7 +29,7 @@ or OT, which have no published limits.
 | Limit | Scope | Over the limit |
 |---|---|---|
 | 10 concurrent exports | Per container, shared by vulns, assets v1/v2, compliance, WAS findings, the workbench export, and Exposure Management inventory exports | 429 + `retry-after` |
-| 3 concurrent requests | Per container, for `workbenches-vulnerability-output`, `workbenches-asset-vulnerability-output`, `scans-details`, `scans-host-details` and `scans-plugin-output` | 429 + `retry-after` |
+| 3 concurrent requests | Per container, for `workbenches-vulnerability-output`, `workbenches-asset-vulnerability-output`, `scans-details`, `scans-host-details`, and `scans-plugin-output` | 429 + `retry-after` |
 | 25 active scans | Per container, including agent scan processing. Check with `io-scans-count` and `active=true` | `scans-launch` returns 429 |
 | 50 concurrent reports | Per user (`vm-reports-create`) | 429 |
 | A per-user limit on Exposure Management inventory export requests | Not documented. In testing, about 5 export requests within about 10 minutes triggered it | 429 "The user limit of export requests is reached, please try again later" |
@@ -69,7 +69,7 @@ Don't retry other 4xx responses. Those are request problems, and retrying won't 
 ## pyTenable retry behavior
 
 - Every `APIPlatform` class retries up to **5 times**, 6 attempts in total.
-- The statuses retried by default are **420, 429, 501, 502, 503 and 504**. **500 is not
+- The statuses retried by default are **420, 429, 501, 502, 503, and 504**. **500 is not
   retried.**
 - The wait is the `Retry-After` value when the header is present (used as is, with no upper
   bound), otherwise `attempt × 1 s` (1, 2, 3, 4, 5, 6 s). It sleeps once more after the

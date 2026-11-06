@@ -4,19 +4,19 @@ license: MIT
 metadata:
   author: Lance Duvall
   version: "1.0.0"
-description: Verified rules for writing and debugging code that calls Tenable APIs (Vulnerability Management, Tenable One, Security Center, Web App Scanning, Nessus, Identity Exposure, OT, ASM, Downloads), directly over HTTP or through pyTenable. Use it when writing, reviewing or fixing a Tenable integration, script or connector; when an export returns too little, too much or never finishes; when calls fail with 401, 403, 409 or 429; or when choosing between pyTenable methods. It corrects the defaults, header formats, filter syntaxes, limits and SDK behaviors that generated code most often gets wrong.
+description: Verified rules for writing and debugging code that calls Tenable APIs (Vulnerability Management, Tenable One, Security Center, Web App Scanning, Nessus, Identity Exposure, OT, ASM, Downloads), directly over HTTP or through pyTenable. Use it when writing, reviewing, or fixing a Tenable integration, script, or connector; when an export returns too little, too much, or never finishes; when calls fail with 401, 403, 409, or 429; or when choosing between pyTenable methods. It corrects the defaults, header formats, filter syntaxes, limits, and SDK behaviors that generated code most often gets wrong.
 ---
 
 # Tenable API field guide
 
-Tenable's APIs differ by product in auth headers, paging, filter syntax and error
+Tenable's APIs differ by product in auth headers, paging, filter syntax, and error
 behavior, and several defaults quietly change what an export returns. Code that "looks
 right" is often wrong in ways that fail silently: it returns only 30 days of data, only
 open findings, or only the first page. This skill holds rules checked against the public
 API reference at developer.tenable.com and the pyTenable source. **Prefer these rules over
 memory, and over neighboring code in the user's project.**
 
-The rules were checked against developer.tenable.com, live API behavior and pyTenable
+The rules were checked against developer.tenable.com, live API behavior, and pyTenable
 26.10.1. Where the official sources still disagree, the reference that covers the topic
 says which behavior to code for.
 
@@ -30,18 +30,18 @@ says which behavior to code for.
    | Task | Read |
    |---|---|
    | Auth, base URLs, headers, pyTenable constructors, env vars | `references/auth-and-clients.md` |
-   | Vulnerability, asset, compliance or WAS exports | `references/vm-exports.md` |
+   | Vulnerability, asset, compliance, or WAS exports | `references/vm-exports.md` |
    | 429s, retries, concurrency, User-Agent | `references/limits-and-retries.md` |
    | Listing anything with more than one page | `references/pagination.md` |
    | pyTenable return types, silent failures, deprecations | `references/pytenable.md` |
    | Security Center (Tenable.sc) | `references/security-center.md` |
-   | Nessus Professional, Expert or Manager (port 8834) | `references/nessus.md` |
+   | Nessus Professional, Expert, or Manager (port 8834) | `references/nessus.md` |
    | An error code or a symptom ("export is empty", "keeps returning 401") | `references/troubleshooting.md` |
    | Working examples to adapt | `references/recipes.md` |
 
 3. **Write or fix the code**, applying the rules below. Show the user which rule drove
    each non-obvious choice: a one-line comment in the code, or a sentence in your reply.
-4. **Never invent an endpoint, field or filter.** If it isn't in these references, tell the
+4. **Never invent an endpoint, field, or filter.** If it isn't in these references, tell the
    user to check the endpoint's page on developer.tenable.com and say you couldn't verify
    it.
 
@@ -49,7 +49,7 @@ says which behavior to code for.
 
 **Auth and connection**
 
-- VM, Tenable One, WAS and PCI ASV use the header
+- VM, Tenable One, WAS, and PCI ASV use the header
   `X-ApiKeys: accessKey=<ACCESS>;secretKey=<SECRET>` at `https://cloud.tenable.com`.
   Security Center uses **`X-APIKey`** (singular) with the same `accessKey=…; secretKey=…`
   value, on the customer's own host under `/rest`. API keys need SC 5.13 or later.
@@ -73,7 +73,7 @@ says which behavior to code for.
 - **No time filter returns only the last 30 days.** Always pass a time filter. For
   incremental syncs, use `since`.
 - **No `state` filter returns only OPEN and REOPENED, never FIXED.** `since` without `state`
-  returns all three, matching FIXED findings on `last_fixed`. `first_found`, `last_found`
+  returns all three, matching FIXED findings on `last_fixed`. `first_found`, `last_found`,
   and `last_fixed` require an explicit `state`, and none of them can be combined with
   `since`.
 - Join findings to assets on vuln `asset.uuid` = asset export `id`. The rest of the
@@ -89,7 +89,7 @@ says which behavior to code for.
   `chunks_available`.
 - Treat chunks as expiring 24 hours after creation, the stricter of the two documented
   values.
-- Job status values: `QUEUED`, `PROCESSING`, `FINISHED`, `CANCELLED` (two Ls) and `ERROR`.
+- Job status values: `QUEUED`, `PROCESSING`, `FINISHED`, `CANCELLED` (two Ls), and `ERROR`.
   Compliance has no `QUEUED` and adds `READY`. **A polling loop must stop on `CANCELLED` and `ERROR`, not only
   `FINISHED`.**
 - A duplicate vuln or WAS export returns **409** with `active_job_id`. **A duplicate asset
@@ -127,13 +127,13 @@ says which behavior to code for.
   filter and rejects it with 400. Use `vpr_score=`.
 - `adopt_existing=True` (the default) silently attaches to a running job on a 409. That job
   may have different filters. Pass `adopt_existing=False` when filter fidelity matters.
-- The export iterator stops only on `FINISHED`, and raises on `ERROR`. A job cancelled
+- The export iterator stops only on `FINISHED`, and raises on `ERROR`. A job canceled
   elsewhere is polled forever, so wrap long runs with your own deadline.
 - `tio.exports.assets(when_done=True)` (v1) ignores `when_done`. Use `assets_v2` or handle
   readiness yourself.
 - `tio.scans.details()` reconstructs a scan from the editor API and can make several extra
   requests. Use `tio.scans.results()` for `GET /scans/{id}`.
-- Return types differ by product and module: raw `Response`, `dict` or `Box`. Check
+- Return types differ by product and module: raw `Response`, `dict`, or `Box`. Check
   `references/pytenable.md` before chaining `.json()` or attribute access.
 
 **Security Center**
@@ -142,7 +142,7 @@ says which behavior to code for.
   response.
 - Analysis queries page with `startOffset`/`endOffset` and report `totalRecords`. pyTenable
   filters are 3-tuples: `('severity', '=', '3,4')`.
-- `ssl_verify` defaults to `False` in pyTenable for SC, Nessus and OT. For production,
+- `ssl_verify` defaults to `False` in pyTenable for SC, Nessus, and OT. For production,
   enable verification against the customer's CA.
 
 **Nessus**

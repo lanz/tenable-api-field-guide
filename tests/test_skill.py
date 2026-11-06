@@ -28,7 +28,7 @@ def frontmatter() -> dict:
 
 def test_frontmatter_meets_agent_skills_rules():
     meta = frontmatter()
-    # Copilot, Cursor and Codex require a lowercase-hyphen name equal to the folder name,
+    # Copilot, Cursor, and Codex require a lowercase-hyphen name equal to the folder name,
     # at most 64 characters, and a description of at most 1024 characters.
     assert re.fullmatch(r'[a-z0-9-]{1,64}', meta['name'])
     assert meta['name'] == 'tenable-api-field-guide'

@@ -26,7 +26,7 @@
 | Security Center `403` with `error_code: 163` listing scans | Administrator keys: the administrator doesn't belong to an organization | Use keys for an organization user (for example a Security Manager) |
 | Every Security Center scan looks scheduled | `enabled` is `"true"` even for on-demand (`template`) schedules | Check `schedule.type` |
 | Security Center asset list members fail to parse as IPs | `viewableIPs` lists UUID-tracked hosts as `<host uuid>\|<address>` | Keep the part after the last `\|`; drop empty addresses |
-| Nessus `{"error": "API is not available"}` on scan calls | The license doesn't include the scan API (common on Professional and Expert) | Check `license.features.scan_api`; use Nessus Manager, Security Center or VM, or parse exported `.nessus` files. Don't work around it |
+| Nessus `{"error": "API is not available"}` on scan calls | The license doesn't include the scan API (common on Professional and Expert) | Check `license.features.scan_api`; use Nessus Manager, Security Center, or VM, or parse exported `.nessus` files. Don't work around it |
 | Nessus `/server/properties` returns 200 but no `license` | The API keys are wrong or were regenerated; this endpoint silently falls back to its unauthenticated view | Check the keys with `GET /session`, which returns 401 for bad keys |
 | Nessus `TypeError` or wrong order when comparing `vpr_score` / `epss_score` | They're numeric strings (`"8.4"`) or `null` | Convert to numbers first; treat `null` as missing |
 | Nessus scan shows no targets, or relaunch logic misfires | A never-run scan has no `info.targets`; runs also pass through `processing` | Read targets from `GET /editor/scan/{id}` (`text_targets`); treat `processing` as busy |

@@ -1,4 +1,4 @@
-# Authentication, base URLs and pyTenable clients
+# Authentication, base URLs, and pyTenable clients
 
 Sources: [Authorization](https://developer.tenable.com/docs/authorization), each API spec's
 `securitySchemes` on developer.tenable.com, and the pyTenable source (26.10.1).
@@ -71,7 +71,7 @@ the class default.
 - **No trailing slash.** `url='https://host/'` produces `https://host//path` on every request.
 - **An invalid URL raises the built-in `ConnectionError`**, not `tenable.errors.ConnectionError`.
 - **Disabling SSL verification is process-wide.** With `ssl_verify=False` (the default for SC,
-  Nessus and OT), pyTenable also suppresses urllib3's "Unverified HTTPS request" warning for
+  Nessus, and OT), pyTenable also suppresses urllib3's "Unverified HTTPS request" warning for
   the whole process. Pass `ssl_verify=True` with a trusted CA bundle in production.
 - **Set a timeout** on every class that has none by default: `TenableOne(…, timeout=120)`.
   Otherwise a stalled connection hangs forever.
@@ -80,6 +80,6 @@ the class default.
 - **SC certificate auth on Windows.** `p12_cert=` writes temporary PEM files that Windows
   can't reopen by name, so convert the certificate to PEM and pass `cert=(cert_path, key_path)`.
 - **Logging can expose secrets.** At DEBUG level pyTenable logs every request's method, URL,
-  parameters and JSON body. Only SC's `token` and `credential` paths are masked, so a Nessus
+  parameters, and JSON body. Only SC's `token` and `credential` paths are masked, so a Nessus
   username/password login appears in clear text. Don't enable DEBUG for `tenable` in
   production.

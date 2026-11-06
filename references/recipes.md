@@ -45,7 +45,7 @@ def export_vulns_since(since: int, deadline_s: int = 6 * 3600):
     body = {
         'num_assets': 1000,
         'include_unlicensed': False,
-        # `since` without `state` returns OPEN, REOPENED and FIXED.
+        # `since` without `state` returns OPEN, REOPENED, and FIXED.
         'filters': {'since': since},
     }
     resp = call(s, 'POST', 'vulns/export', json=body)
@@ -131,7 +131,7 @@ tio = TenableIO()
 def assets_by_id(since: int | None = None) -> dict[str, dict]:
     kwargs = {'chunk_size': 4000}          # required by the API; 100–10000
     if since:
-        kwargs['since'] = since            # v2 only: updated, deleted or terminated since
+        kwargs['since'] = since            # v2 only: updated, deleted, or terminated since
     return {a['id']: a for a in tio.exports.assets_v2(**kwargs)}
 
 

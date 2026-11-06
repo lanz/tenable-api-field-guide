@@ -4,7 +4,7 @@ Nessus has no OpenAPI spec on developer.tenable.com. **The scanner documents its
 at `https://<scanner>:8834/api`**, and that page is the only official reference. Tenable
 Support treats it as the contract, so endpoints and fields it doesn't list are
 unsupported. The rules below come from that API's behavior on Nessus 10.12 and 10.13
-(Professional, Expert and Manager), the Nessus user guide, and pyTenable 26.10.1.
+(Professional, Expert, and Manager), the Nessus user guide, and pyTenable 26.10.1.
 
 ## Licensing comes first
 
@@ -33,7 +33,7 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
   `professional`, `expert`) names the edition more reliably than the `nessus_type` text.
 - **Don't write code that works around the restriction**, for example by scripting the
   web UI or reusing a browser session. Where `scan_api` is off, have the user export
-  `.nessus` files from the UI and parse those, or use Nessus Manager, Security Center or
+  `.nessus` files from the UI and parse those, or use Nessus Manager, Security Center, or
   VM.
 - `GET /server/properties` **without authentication** still returns `nessus_type`
   (`Nessus Professional`, `Nessus Expert`, `Nessus Manager`, …), but not the license or
@@ -44,7 +44,7 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
   missing `license` as "not authenticated", not "no features".
 - **The authenticated response contains license secrets**: `license.activation_code`,
   `license.update_password`, `license.pendo_api_key`, `license.customer_id`,
-  `license.drm` and `server_uuid`. Never log it or return it whole. Copy out the fields
+  `license.drm`, and `server_uuid`. Never log it or return it whole. Copy out the fields
   you need.
 - Two advanced settings can turn the API off entirely: `disable_api` (UI and API) and
   `disable_frontend` (UI only; the API keeps working).
@@ -65,7 +65,7 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
   `ssl_verify=False`, which silently skips verification and suppresses urllib3's warning.
   Pass `ssl_verify=` the CA bundle path instead.
 - Routes the license lacks return **403 `{"error": "Route not available"}`**. On
-  Professional and Expert this includes `agents`, `agent-groups`, `users` and `groups`.
+  Professional and Expert this includes `agents`, `agent-groups`, `users`, and `groups`.
   Don't retry it, and don't treat it as an auth failure.
 - Since Nessus 10.12, API permissions match the UI's: a Basic user can't do through the
   API what they can't do in the UI. Agent groups need an administrator.
@@ -74,13 +74,13 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
 
 - **Empty lists come back as `null`**, not `[]`. For example, `GET /scans` on a scanner
   with no scans returns `{"folders": [...], "scans": null, "timestamp": …}`, and the same
-  goes for `policies`, `agents` and `plugin_rules`. Always use `body.get('scans') or []`.
+  goes for `policies`, `agents`, and `plugin_rules`. Always use `body.get('scans') or []`.
 - `GET /plugins/families` can also return `families: null` while plugins are still
   loading or the feed is incomplete, and `GET /plugins/plugin/{id}` then returns a plugin
   with an empty `attributes` list. Check `GET /server/status` (`status: ready`,
   `pluginSet: true`) before relying on plugin data.
 - **Scan status values** seen in practice: `empty` (never run), `running`, `pausing`,
-  `paused`, `resuming`, `stopping`, `processing`, `completed`, `canceled` and `imported`.
+  `paused`, `resuming`, `stopping`, `processing`, `completed`, `canceled`, and `imported`.
   - A run passes through `processing` after it finishes or is stopped, so treat it as
     busy.
   - Imported scans have results but no run history.
@@ -99,7 +99,7 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
   - **`info.targets` is empty for a scan that has never run.** `GET /scans/{id}`
     describes results; the configured targets are in the scan editor (see below).
 - `GET /scans/{id}/hosts/{host_id}` gives one host's findings, with `plugin_id`,
-  `severity`, `count`, `vpr_score`, `epss_score` and `cpe`.
+  `severity`, `count`, `vpr_score`, `epss_score`, and `cpe`.
   - **`vpr_score` and `epss_score` are numeric strings** (`"8.4"`, `"0.9123"`) or
     `null`, here and in a scan's `vulnerabilities[]`. Convert them before comparing or
     sorting: `"10.0" < "9.1"` as strings.
@@ -129,7 +129,7 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
 
 - **Templates:** `GET /editor/scan/templates` returns `templates[]` with `uuid`, `name`
   (`basic`, `advanced`, `discovery`, …), `title`, `desc`, and the flags `is_agent`,
-  `is_was`, `manager_only`, `subscription_only`, `unsupported` and `license_fulfilled`.
+  `is_was`, `manager_only`, `subscription_only`, `unsupported`, and `license_fulfilled`.
   Agent and web app templates take agents or URLs, not IP or host targets.
 - **Create:** `POST /scans` with
   `{"uuid": "<template uuid>", "settings": {"name": …, "text_targets": "192.0.2.0/24, host.example.com", "enabled": false}}`
@@ -143,7 +143,7 @@ unsupported. The rules below come from that API's behavior on Nessus 10.12 and 1
 - **Launch:** `POST /scans/{id}/launch` with `{}` or
   `{"alt_targets": ["192.0.2.5"]}` returns `{"scan_uuid": …}`. The status goes to
   `running` within a few seconds.
-- **Control:** `POST /scans/{id}/pause`, `/resume` and `/stop`, each with an empty body.
+- **Control:** `POST /scans/{id}/pause`, `/resume`, and `/stop`, each with an empty body.
   - Pause goes `pausing` → `paused`.
   - Resume goes `resuming` → `running`.
   - Stop goes `stopping` → `processing` → `canceled`.
@@ -184,9 +184,9 @@ scans = nessus.scans.list()['scans'] or []      # a dict, and `scans` may be Non
   a list of scans.
 - **`plugins.list()` reads every family, then makes one request per plugin.** That's about
   200,000 requests on a current feed, and it fails outright if `families` is `null`. Use
-  `plugins.families()`, `plugins.family_details(id)` and `plugins.plugin_details(id)` for
+  `plugins.families()`, `plugins.family_details(id)`, and `plugins.plugin_details(id)` for
   what you need.
-- `scans.export_scan(scan_id, fobj=…, format='nessus')` runs the export, poll and
+- `scans.export_scan(scan_id, fobj=…, format='nessus')` runs the export, poll, and
   download for you. Its poll checks every 0.5 s with **no timeout**. It raises on `error`
   and on 404, but waits indefinitely while the status stays `loading`. Run it under your
   own deadline.

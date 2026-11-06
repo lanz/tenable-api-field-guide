@@ -68,7 +68,7 @@ Rules:
 ## Exports
 
 See `vm-exports.md` § pyTenable: defaults that differ from the API, `adopt_existing`, the
-ignored `when_done` on assets v1, the endless poll of a cancelled job, and chunk decode
+ignored `when_done` on assets v1, the endless poll of a canceled job, and chunk decode
 failures returning `[]`.
 
 ## Tenable One (`TenableOne`)
@@ -77,7 +77,7 @@ failures returning `[]`.
 - Sort is sent as `sort=<field>:<direction>`, but **only when both `sort_by` and
   `sort_direction` are given**. Otherwise sorting is silently dropped.
 - `SortDirection` and `QueryMode` in `tenable.tenableone.inventory.schema` are plain
-  `Enum`s. Pass `SortDirection.DESC`, not `'desc'`: assets, software and tags call `.value`
+  `Enum`s. Pass `SortDirection.DESC`, not `'desc'`: assets, software, and tags call `.value`
   and raise `AttributeError` on a string.
 - **Inventory findings send the text query only when both `query_text` and `query_mode` are
   set**; with just `query_text`, it's silently dropped. Assets send it when either is set.
@@ -115,5 +115,5 @@ failures returning `[]`.
   Each exposes `.code` and `.response`.
 - **On Security Center, a 403 raises a plain `APIError`**, so `except ForbiddenError` never
   fires there.
-- `tenable.errors.ConnectionError`, `NotImplementedError` and `PackageMissingError` shadow
+- `tenable.errors.ConnectionError`, `NotImplementedError`, and `PackageMissingError` shadow
   built-in names. Import them qualified (`from tenable import errors`).

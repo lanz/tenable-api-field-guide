@@ -2,9 +2,9 @@
 
 An agent skill that makes AI coding assistants write correct code against Tenable's APIs,
 and diagnose integrations that misbehave. It works with Claude Code, Codex, Cursor, GitHub
-Copilot and Gemini CLI.
+Copilot, and Gemini CLI.
 
-Tenable's APIs differ by product in auth headers, paging, filter syntax and error behavior,
+Tenable's APIs differ by product in auth headers, paging, filter syntax, and error behavior,
 and several defaults quietly change results. An assistant working from memory typically
 writes a vulnerability export that:
 
@@ -22,9 +22,9 @@ so it gets these right the first time.
 
 ## What it covers
 
-- **Auth and clients:** header and base URL per product, pyTenable constructors and env var
-  prefixes, SSL, timeouts.
-- **VM exports:** vulnerability, asset (v1/v2), compliance and WAS exports.
+- **Auth and clients:** header and base URL per product, pyTenable constructors, env var
+  prefixes, SSL, and timeouts.
+- **VM exports:** vulnerability, asset (v1/v2), compliance, and WAS exports.
   - The lifecycle and status values.
   - Default time and state windows.
   - Filter syntax, including tag filters, which take one form for vulns and assets v1,
@@ -39,7 +39,7 @@ so it gets these right the first time.
 - **pyTenable:** return types, silent failures, deprecated methods and their replacements,
   and Tenable One enum and sort quirks.
 - **Security Center:** errors inside HTTP 200, analysis paging, filter tuples, the automatic
-  WAS exclusion, asset lists, schedules and freeze windows.
+  WAS exclusion, asset lists, schedules, and freeze windows.
 - **Nessus:** the scan API licensing restriction on Professional and Expert and how to
   detect it, `null` lists, single-use export downloads, credential fields in scan details,
   and pyTenable's Nessus quirks.
@@ -78,7 +78,7 @@ For example:
 # Claude Code
 git clone https://github.com/lanz/tenable-api-field-guide ~/.claude/skills/tenable-api-field-guide
 
-# Codex, Cursor, GitHub Copilot and Gemini CLI all read ~/.agents/skills
+# Codex, Cursor, GitHub Copilot, and Gemini CLI all read ~/.agents/skills
 git clone https://github.com/lanz/tenable-api-field-guide ~/.agents/skills/tenable-api-field-guide
 ```
 
@@ -100,7 +100,7 @@ The assistant loads the skill on its own when you work on Tenable API code. Try:
 
 > Write a script that launches a scan on our Nessus Professional scanner.
 
-You can also invoke it directly: `/tenable-api-field-guide` in Claude Code, Cursor and
+You can also invoke it directly: `/tenable-api-field-guide` in Claude Code, Cursor, and
 GitHub Copilot, or `$tenable-api-field-guide` in Codex. Gemini CLI activates skills itself
 and asks for consent the first time.
 
@@ -112,7 +112,7 @@ skill loaded, generated code typically:
 - sets `since` or an explicit `state`, so FIXED findings and older data aren't silently
   dropped
 - handles `409` by reusing `active_job_id`, and `429` by sleeping for `retry-after`
-- stops polling on `FINISHED`, `CANCELLED` or `ERROR`, with a deadline
+- stops polling on `FINISHED`, `CANCELLED`, or `ERROR`, with a deadline
 - downloads chunks from `chunks_available` as they appear, instead of counting to
   `total_chunks`
 - passes pyTenable's `include_unlicensed` and `num_assets` explicitly, and uses the right
@@ -125,17 +125,17 @@ The assistant also explains which rule drove each non-obvious choice.
 ## Data handling
 
 The skill contains no code that runs, and makes no network requests. It tells the assistant
-never to hardcode, log or print API keys. Code the assistant writes from it calls only the
+never to hardcode, log, or print API keys. Code the assistant writes from it calls only the
 Tenable endpoints you ask for.
 
 ## Known limitations
 
 - **Point-in-time accuracy.** The rules were checked against developer.tenable.com, live
-  API behavior and pyTenable 26.10.1. APIs change, so check the official reference for
+  API behavior, and pyTenable 26.10.1. APIs change, so check the official reference for
   anything critical. Issues and PRs with corrections are welcome.
 - **Public APIs only.** It covers documented endpoints, and tells the assistant not to
   guess at others.
-- **Security Center, Nessus and OT** have no OpenAPI spec on developer.tenable.com. Their
+- **Security Center, Nessus, and OT** have no OpenAPI spec on developer.tenable.com. Their
   rules come from live API behavior, the product user guides, and pyTenable's
   implementation, so coverage is thinner than for VM. A Nessus scanner documents its own
   API at `https://<scanner>:8834/api`.
@@ -173,5 +173,5 @@ This is an independent open source community project. It is not an official Tena
 product and is not affiliated with, sponsored by, endorsed by, or supported by
 Tenable, Inc.
 
-Tenable, Nessus and other Tenable product names are trademarks or registered trademarks
+Tenable, Nessus, and other Tenable product names are trademarks or registered trademarks
 of Tenable, Inc. Other names may be trademarks of their respective owners.
